@@ -1,6 +1,6 @@
 package com.example.kafkaconsumer.entities;
 
-/*import jakarta.persistence.*;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,4 +22,4 @@ public class ReviewEntity {
 
     @ManyToOne
     private MovieEntity movie;
-}*/
+}

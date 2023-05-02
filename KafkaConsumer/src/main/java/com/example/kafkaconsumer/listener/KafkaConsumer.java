@@ -1,9 +1,12 @@
 package com.example.kafkaconsumer.listener;
 
 import com.example.kafkaconsumer.entities.MovieEntity;
+import com.example.kafkaconsumer.entities.ReviewEntity;
 import com.example.kafkaconsumer.model.MovieRequest;
-import com.example.kafkaconsumer.model.User;
+import com.example.kafkaconsumer.model.ReviewRequest;
+import com.example.kafkaconsumer.model.UpvoteRequest;
 import com.example.kafkaconsumer.repositories.MovieRepository;
+import com.example.kafkaconsumer.repositories.ReviewRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NoArgsConstructor;
@@ -16,9 +19,10 @@ import org.springframework.stereotype.Service;
 public class KafkaConsumer {
 
     private final MovieRepository movieRepository;
+    private final ReviewRepository reviewRepository;
 
-    @KafkaListener(topics = "Kafka_Example", groupId = "group_id")
-    public void consume(String message) throws JsonProcessingException {
+    @KafkaListener(topics = "MOVIE", groupId = "group_id")
+    public void consumeMovie(String message) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         MovieRequest movie = objectMapper.readValue(message, MovieRequest.class);
         System.out.println("Consumed message: " + message);
@@ -31,16 +35,34 @@ public class KafkaConsumer {
         System.out.println(movieRepository.findAll());
     }
 
+    @KafkaListener(topics = "REVIEW", groupId = "group_id")
+    public void consumeReview(String message) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ReviewRequest review = objectMapper.readValue(message, ReviewRequest.class);
+        System.out.println("Consumed message: " + message);
 
-    @KafkaListener(topics = "Kafka_Example_json", groupId = "group_json",
-            containerFactory = "movieKafkaListenerFactory")
-    public void consumeJson(MovieRequest movie) {
-        System.out.println("Consumed JSON Message: " + movie);
-        MovieEntity m = new MovieEntity();
-        m.setName(movie.getName());
-        m.setDescription(movie.getDescription());
-        m.setYear(movie.getYear());
-        movieRepository.save(m);
-        System.out.println(movieRepository.findAll());
+        MovieEntity me = movieRepository.findById((long) review.getMovieId()).get();
+        if(me == null) throw new IllegalArgumentException("Invalid ID");
+
+        ReviewEntity r = new ReviewEntity();
+        r.setName(review.getName());
+        r.setText(review.getText());
+        r.setRating(review.getRating());
+        r.setUpvotes(0);
+        r.setMovie(me);
+        reviewRepository.save(r);
+    }
+
+    @KafkaListener(topics = "UPVOTE", groupId = "group_id")
+    public void consumeUpvote(String message) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        UpvoteRequest upvote = objectMapper.readValue(message, UpvoteRequest.class);
+        System.out.println("Consumed message: " + message);
+
+        ReviewEntity re = reviewRepository.findById((long) upvote.getReviewId()).get();
+        if(re == null) throw new IllegalArgumentException("Invalid ID");
+
+        re.setUpvotes(re.getUpvotes() + upvote.getUpvotesNum());
+        reviewRepository.save(re);
     }
 }

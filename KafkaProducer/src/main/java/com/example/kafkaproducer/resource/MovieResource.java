@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 
@@ -20,13 +19,11 @@ public class MovieResource {
     @Autowired
     private KafkaTemplate<String, MovieRequest> movieKafkaTemplate;
 
-    private WebClient webClient = WebClient.create("consumer:8081");
-
-    private static final String TOPIC = "Kafka_Example";
+    private static final String MOVIE_TOPIC = "MOVIE";
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public MovieRequest addMovie(@RequestBody MovieRequest request) {
-        movieKafkaTemplate.send(TOPIC, request);
+        movieKafkaTemplate.send(MOVIE_TOPIC, request);
         return request;
     }
 
@@ -36,6 +33,23 @@ public class MovieResource {
 
         String resourceUrl
                 = "http://consumer:8081/movies";
+
+        // Fetch JSON response as String wrapped in ResponseEntity
+        ResponseEntity<String> response
+                = restTemplate.getForEntity(resourceUrl, String.class);
+
+        String productsJson = response.getBody();
+
+        System.out.println(productsJson);
+        return productsJson;
+    }
+
+    @RequestMapping(value = "/rating/{id}", method = RequestMethod.GET)
+    public String movieRating(@PathVariable("id") final int id) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        String resourceUrl
+                = "http://consumer:8081/rating/" + id;
 
         // Fetch JSON response as String wrapped in ResponseEntity
         ResponseEntity<String> response

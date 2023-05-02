@@ -1,18 +1,18 @@
 package com.example.kafkaproducer.config;
 
 import com.example.kafkaproducer.model.MovieRequest;
-import com.example.kafkaproducer.model.User;
+import com.example.kafkaproducer.model.ReviewRequest;
+import com.example.kafkaproducer.model.UpvoteRequest;
+import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonSerializer;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +21,31 @@ import java.util.Map;
 public class KafkaConfiguration {
 
     @Bean
-    public ProducerFactory<String, MovieRequest> producerFactory() {
+    public NewTopic topicMovie() {
+        return TopicBuilder.name("MOVIE")
+                .partitions(6)
+                .replicas(3)
+                .build();
+    }
+
+    @Bean
+    public NewTopic topicReview() {
+        return TopicBuilder.name("REVIEW")
+                .partitions(6)
+                .replicas(3)
+                .build();
+    }
+
+    @Bean
+    public NewTopic topicUpvote() {
+        return TopicBuilder.name("UPVOTE")
+                .partitions(6)
+                .replicas(3)
+                .build();
+    }
+
+    @Bean
+    public ProducerFactory<String, MovieRequest> producerMovieFactory() {
         Map<String, Object> config = new HashMap<>();
 
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka:9092");
@@ -33,13 +57,41 @@ public class KafkaConfiguration {
 
 
     @Bean
-    public KafkaTemplate<String, MovieRequest> kafkaTemplate() {
-        return new KafkaTemplate<>(producerFactory());
+    public KafkaTemplate<String, MovieRequest> kafkaMovieTemplate() {
+        return new KafkaTemplate<>(producerMovieFactory());
     }
 
     @Bean
-    public WebClient webClient() {
-        WebClient webClient = WebClient.create("consumer:8081");
-        return webClient;
+    public ProducerFactory<String, ReviewRequest> producerReviewFactory() {
+        Map<String, Object> config = new HashMap<>();
+
+        config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka:9092");
+        config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+
+        return new DefaultKafkaProducerFactory<>(config);
+    }
+
+
+    @Bean
+    public KafkaTemplate<String, ReviewRequest> kafkaReviewTemplate() {
+        return new KafkaTemplate<>(producerReviewFactory());
+    }
+
+    @Bean
+    public ProducerFactory<String, UpvoteRequest> producerUpvoteFactory() {
+        Map<String, Object> config = new HashMap<>();
+
+        config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka:9092");
+        config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+
+        return new DefaultKafkaProducerFactory<>(config);
+    }
+
+
+    @Bean
+    public KafkaTemplate<String, UpvoteRequest> kafkaUpvoteTemplate() {
+        return new KafkaTemplate<>(producerUpvoteFactory());
     }
 }
