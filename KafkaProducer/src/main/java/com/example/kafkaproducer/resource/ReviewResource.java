@@ -4,6 +4,7 @@ import com.example.kafkaproducer.model.MovieRequest;
 import com.example.kafkaproducer.model.ReviewRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +21,8 @@ public class ReviewResource {
     @Autowired
     private KafkaTemplate<String, ReviewRequest> reviewKafkaTemplate;
 
-    private static final String REVIEW_TOPIC = "REVIEW";
+    @Value("${REVIEW_TOPIC}")
+    private String REVIEW_TOPIC;
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public ReviewRequest addMovie(@RequestBody ReviewRequest request) {

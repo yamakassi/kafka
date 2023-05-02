@@ -4,6 +4,7 @@ import com.example.kafkaproducer.model.ReviewRequest;
 import com.example.kafkaproducer.model.UpvoteRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +18,8 @@ public class UpvoteResource {
     @Autowired
     private KafkaTemplate<String, UpvoteRequest> upvoteKafkaTemplate;
 
-    private static final String UPVOTE_TOPIC = "UPVOTE";
+    @Value("${UPVOTE_TOPIC}")
+    private String UPVOTE_TOPIC;
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public UpvoteRequest addMovie(@RequestBody UpvoteRequest request) {

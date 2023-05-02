@@ -11,17 +11,17 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class KafkaConsumer {
-
     private final MovieRepository movieRepository;
     private final ReviewRepository reviewRepository;
 
-    @KafkaListener(topics = "MOVIE", groupId = "group_id")
+    @KafkaListener(topics = {"${MOVIE_TOPIC}"}, groupId = "group_id")
     public void consumeMovie(String message) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         MovieRequest movie = objectMapper.readValue(message, MovieRequest.class);
@@ -35,7 +35,7 @@ public class KafkaConsumer {
         System.out.println(movieRepository.findAll());
     }
 
-    @KafkaListener(topics = "REVIEW", groupId = "group_id")
+    @KafkaListener(topics = {"${REVIEW_TOPIC}"}, groupId = "group_id")
     public void consumeReview(String message) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         ReviewRequest review = objectMapper.readValue(message, ReviewRequest.class);
@@ -53,7 +53,7 @@ public class KafkaConsumer {
         reviewRepository.save(r);
     }
 
-    @KafkaListener(topics = "UPVOTE", groupId = "group_id")
+    @KafkaListener(topics = {"${UPVOTE_TOPIC}"}, groupId = "group_id")
     public void consumeUpvote(String message) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         UpvoteRequest upvote = objectMapper.readValue(message, UpvoteRequest.class);

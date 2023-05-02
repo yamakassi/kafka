@@ -26,8 +26,20 @@ services:
     depends_on:
       - db
       - kafka
-    ports:
-      - "8081:8081"
+    expose:
+      - "8081"
+    #ports:
+      #- "8081:8081"
+    env_file:
+      - .env
+    environment:
+      - BOOTSTRAP_SERVERS_CONFIG=${BOOTSTRAP_SERVERS_CONFIG}
+      - MOVIE_TOPIC=${MOVIE_TOPIC}
+      - REVIEW_TOPIC=${REVIEW_TOPIC}
+      - UPVOTE_TOPIC=${UPVOTE_TOPIC}
+      - URL_DB=${URL_DB}
+      - USERNAME_DB=${USERNAME_DB}
+      - PASSWORD_DB=${PASSWORD_DB}
   producer:
     image: "myapp2"
     build: ./KafkaProducer
@@ -36,6 +48,13 @@ services:
       - kafka
     ports:
       - "8080:8080"
+    env_file:
+      - .env
+    environment:
+      - BOOTSTRAP_SERVERS_CONFIG=${BOOTSTRAP_SERVERS_CONFIG}
+      - MOVIE_TOPIC=${MOVIE_TOPIC}
+      - REVIEW_TOPIC=${REVIEW_TOPIC}
+      - UPVOTE_TOPIC=${UPVOTE_TOPIC}
   db:
     image: 'postgres:13.1-alpine'
 
