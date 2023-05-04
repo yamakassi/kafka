@@ -1,5 +1,6 @@
 package com.example.kafkaproducer.resource;
 
+import com.example.kafkaproducer.ApiClient;
 import com.example.kafkaproducer.model.MovieRequest;
 import com.example.kafkaproducer.model.ReviewRequest;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,8 @@ import org.springframework.web.client.RestTemplate;
 @RequestMapping("/review")
 public class ReviewResource {
 
+    private final ApiClient apiClient;
+
     @Autowired
     private KafkaTemplate<String, ReviewRequest> reviewKafkaTemplate;
 
@@ -32,18 +35,6 @@ public class ReviewResource {
 
     @RequestMapping(method = RequestMethod.GET)
     public String movies() {
-        RestTemplate restTemplate = new RestTemplate();
-
-        String resourceUrl
-                = "http://consumer:8081/reviews";
-
-        // Fetch JSON response as String wrapped in ResponseEntity
-        ResponseEntity<String> response
-                = restTemplate.getForEntity(resourceUrl, String.class);
-
-        String productsJson = response.getBody();
-
-        System.out.println(productsJson);
-        return productsJson;
+        return apiClient.getResponse("/reviews");
     }
 }

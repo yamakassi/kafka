@@ -1,5 +1,6 @@
 package com.example.kafkaproducer.resource;
 
+import com.example.kafkaproducer.ApiClient;
 import com.example.kafkaproducer.model.MovieRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,8 @@ public class MovieResource {
     @Autowired
     private KafkaTemplate<String, MovieRequest> movieKafkaTemplate;
 
+    private final ApiClient apiClient;
+
     @Value("${MOVIE_TOPIC}")
     private String MOVIE_TOPIC;
 
@@ -31,86 +34,26 @@ public class MovieResource {
 
     @RequestMapping(method = RequestMethod.GET)
     public String movies() {
-        RestTemplate restTemplate = new RestTemplate();
-
-        String resourceUrl
-                = "http://consumer:8081/movies";
-
-        // Fetch JSON response as String wrapped in ResponseEntity
-        ResponseEntity<String> response
-                = restTemplate.getForEntity(resourceUrl, String.class);
-
-        String productsJson = response.getBody();
-
-        System.out.println(productsJson);
-        return productsJson;
+        return apiClient.getResponse("/movies");
     }
 
     @RequestMapping(value = "/rating/{id}", method = RequestMethod.GET)
     public String movieRating(@PathVariable("id") final int id) {
-        RestTemplate restTemplate = new RestTemplate();
-
-        String resourceUrl
-                = "http://consumer:8081/rating/" + id;
-
-        // Fetch JSON response as String wrapped in ResponseEntity
-        ResponseEntity<String> response
-                = restTemplate.getForEntity(resourceUrl, String.class);
-
-        String productsJson = response.getBody();
-
-        System.out.println(productsJson);
-        return productsJson;
+        return apiClient.getResponse("/rating/" + id);
     }
 
     @RequestMapping(value = "/top", method = RequestMethod.GET)
     public String movieTop() {
-        RestTemplate restTemplate = new RestTemplate();
-
-        String resourceUrl
-                = "http://consumer:8081/movies/top";
-
-        // Fetch JSON response as String wrapped in ResponseEntity
-        ResponseEntity<String> response
-                = restTemplate.getForEntity(resourceUrl, String.class);
-
-        String productsJson = response.getBody();
-
-        System.out.println(productsJson);
-        return productsJson;
+        return apiClient.getResponse("/movies/top");
     }
 
     @RequestMapping(value = "/upvoteSortedReviews/{id}", method = RequestMethod.GET)
     public String movieUpvoteReviews(@PathVariable("id") final int id) {
-        RestTemplate restTemplate = new RestTemplate();
-
-        String resourceUrl
-                = "http://consumer:8081/topReviews/" + id;
-
-        // Fetch JSON response as String wrapped in ResponseEntity
-        ResponseEntity<String> response
-                = restTemplate.getForEntity(resourceUrl, String.class);
-
-        String productsJson = response.getBody();
-
-        System.out.println(productsJson);
-        return productsJson;
+        return apiClient.getResponse("/topReviews/" + id);
     }
 
     @RequestMapping(value = "/positiveSortedReviews/{id}", method = RequestMethod.GET)
     public String moviePositiveReviews(@PathVariable("id") final int id) {
-        RestTemplate restTemplate = new RestTemplate();
-
-        String resourceUrl
-                = "http://consumer:8081/mostRatedReviews/" + id;
-
-        // Fetch JSON response as String wrapped in ResponseEntity
-        ResponseEntity<String> response
-                = restTemplate.getForEntity(resourceUrl, String.class);
-
-        String productsJson = response.getBody();
-
-        System.out.println(productsJson);
-        return productsJson;
+        return apiClient.getResponse("/mostRatedReviews/" + id);
     }
 }

@@ -55,6 +55,7 @@ services:
       - MOVIE_TOPIC=${MOVIE_TOPIC}
       - REVIEW_TOPIC=${REVIEW_TOPIC}
       - UPVOTE_TOPIC=${UPVOTE_TOPIC}
+      - CONSUMER_ADR=${CONSUMER_ADR}
   db:
     image: 'postgres:13.1-alpine'
 
