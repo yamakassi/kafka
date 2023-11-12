@@ -1,6 +1,6 @@
 package com.example.kafkaconsumer.config;
 
-import com.example.kafkaconsumer.model.MovieRequest;
+import com.example.kafkaconsumer.model.ProductRequest;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -24,34 +24,13 @@ public class KafkaConfiguration {
     @Value("${BOOTSTRAP_SERVERS_CONFIG}")
     private String BOOTSTRAP_SERVERS_CONFIG;
 
-    @Value("${MOVIE_TOPIC}")
-    private String MOVIE_TOPIC;
+    @Value("${SPARK_TOPIC}")
+    private String SPARK_TOPIC;
 
-    @Value("${REVIEW_TOPIC}")
-    private String REVIEW_TOPIC;
-
-    @Value("${UPVOTE_TOPIC}")
-    private String UPVOTE_TOPIC;
 
     @Bean
-    public NewTopic topicMovie() {
-        return TopicBuilder.name(MOVIE_TOPIC)
-                .partitions(6)
-                .replicas(3)
-                .build();
-    }
-
-    @Bean
-    public NewTopic topicReview() {
-        return TopicBuilder.name(REVIEW_TOPIC)
-                .partitions(6)
-                .replicas(3)
-                .build();
-    }
-
-    @Bean
-    public NewTopic topicUpvote() {
-        return TopicBuilder.name(UPVOTE_TOPIC)
+    public NewTopic topicSpark() {
+        return TopicBuilder.name(SPARK_TOPIC)
                 .partitions(6)
                 .replicas(3)
                 .build();
@@ -79,21 +58,22 @@ public class KafkaConfiguration {
 
 
     @Bean
-    public ConsumerFactory<String, MovieRequest> movieConsumerFactory() {
+    public ConsumerFactory<String, ProductRequest> productConsumerFactory() {
         Map<String, Object> config = new HashMap<>();
 
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS_CONFIG);
         config.put(ConsumerConfig.GROUP_ID_CONFIG, "group_json");
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+        config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
         return new DefaultKafkaConsumerFactory<>(config, new StringDeserializer(),
-                new JsonDeserializer<>(MovieRequest.class));
+                new JsonDeserializer<>(ProductRequest.class));
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, MovieRequest> movieKafkaListenerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, MovieRequest> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(movieConsumerFactory());
+    public ConcurrentKafkaListenerContainerFactory<String, ProductRequest> productKafkaListenerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, ProductRequest> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(productConsumerFactory());
         return factory;
     }
 }

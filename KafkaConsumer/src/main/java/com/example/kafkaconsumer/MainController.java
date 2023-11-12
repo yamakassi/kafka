@@ -1,10 +1,5 @@
 package com.example.kafkaconsumer;
 
-import com.example.kafkaconsumer.entities.MovieEntity;
-import com.example.kafkaconsumer.entities.ReviewEntity;
-import com.example.kafkaconsumer.model.MovieRating;
-import com.example.kafkaconsumer.model.ReviewRating;
-import com.example.kafkaconsumer.model.ReviewUpvotes;
 import com.example.kafkaconsumer.services.MovieService;
 import com.example.kafkaconsumer.services.ReviewService;
 import lombok.RequiredArgsConstructor;

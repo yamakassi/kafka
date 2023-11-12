@@ -1,17 +1,11 @@
 package com.example.kafkaconsumer.listener;
 
-import com.example.kafkaconsumer.entities.MovieEntity;
-import com.example.kafkaconsumer.entities.ReviewEntity;
-import com.example.kafkaconsumer.model.MovieRequest;
-import com.example.kafkaconsumer.model.ReviewRequest;
-import com.example.kafkaconsumer.model.UpvoteRequest;
-import com.example.kafkaconsumer.repositories.MovieRepository;
-import com.example.kafkaconsumer.repositories.ReviewRepository;
+import com.example.kafkaconsumer.entities.ProductEntity;
+import com.example.kafkaconsumer.model.ProductRequest;
+import com.example.kafkaconsumer.repositories.ProductRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +14,7 @@ import org.springframework.stereotype.Service;
 public class KafkaConsumer {
     private final MovieRepository movieRepository;
     private final ReviewRepository reviewRepository;
+    private final ProductRepository productRepository;
 
     @KafkaListener(topics = {"${MOVIE_TOPIC}"}, groupId = "group_id")
     public void consumeMovie(String message) throws JsonProcessingException {
@@ -65,4 +60,22 @@ public class KafkaConsumer {
         re.setUpvotes(re.getUpvotes() + upvote.getUpvotesNum());
         reviewRepository.save(re);
     }
+    @KafkaListener(topics = {"${SPARK_TOPIC}"}, groupId = "group_id")
+    public void consumeProduct(String message) throws JsonProcessingException {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        ProductRequest product = objectMapper.readValue(message, ProductRequest.class);
+        System.out.println("Consumed message: " + message);
+        System.out.println(product);
+        ProductEntity m = new ProductEntity();
+        m.setProductId(product.getProductId());
+        m.setProductName(product.getProductName());
+        m.setDescription(product.getDescription());
+        m.setPrice(product.getPrice());
+        m.setBrand(product.getBrand());
+        productRepository.save(m);
+
+    }
+
+
 }

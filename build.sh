@@ -4,4 +4,4 @@ cd - &&
 cd KafkaProducer
 ./gradlew bootJar &&
 cd .. &&
-docker compose up --build -d
+docker compose up -d --build
