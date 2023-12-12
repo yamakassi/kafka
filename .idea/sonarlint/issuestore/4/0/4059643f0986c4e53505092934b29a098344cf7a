@@ -1,0 +1,6 @@
+
+Q
+java:S3740A"/Provide the parametrized type for this generic.(ß þøùÿÿÿÿ8‚èä­Ã1
+„	java:S116"cRename this field "BOOTSTRAP_SERVERS_CONFIG" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÕØ‘„ÿÿÿÿÿ8œèä­Ã1
+r	java:S116"VRename this field "SPARK_TOPIC" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¤ˆ¿Ú8•öÉÿÄ1
+v	java:S116 "ZRename this field "SPARK_OUT_TOPIC" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ØÐôö8•öÉÿÄ1

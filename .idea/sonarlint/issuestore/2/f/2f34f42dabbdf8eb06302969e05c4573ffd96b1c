@@ -1,0 +1,15 @@
+
+„	java:S116"cRename this field "BOOTSTRAP_SERVERS_CONFIG" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÕØ‘„ÿÿÿÿÿ8ªëä­Ã1
+r	java:S116"VRename this field "SPARK_TOPIC" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¤ˆ¿Ú8„‰˜ûÄ1
+{	java:S116"ZRename this field "SPARK_TOPIC_OUT" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‹‰€÷ýÿÿÿÿ8…‰˜ûÄ1
+t	java:S116"SRename this field "SPARK_IN" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(­á¾Øúÿÿÿÿ8…‰˜ûÄ1
+C
+java:S1170"!Make this final field static too.(‹‰€÷ýÿÿÿÿ8†‰˜ûÄ1
+C
+java:S1170"!Make this final field static too.(­á¾Øúÿÿÿÿ8†‰˜ûÄ1
+ˆ
+java:S4144D"fUpdate this method so that its implementation is not identical to "producerWeatherFactory" on line 54.(ö¾þ–úÿÿÿÿ8“‰˜ûÄ1
+U
+java:S1068"3Remove this unused "SPARK_TOPIC_OUT" private field.(‹‰€÷ýÿÿÿÿ8Ö‰˜ûÄ1
+N
+java:S1068",Remove this unused "SPARK_IN" private field.(­á¾Øúÿÿÿÿ8×‰˜ûÄ1

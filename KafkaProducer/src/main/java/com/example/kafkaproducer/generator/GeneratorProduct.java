@@ -1,7 +1,7 @@
 package com.example.kafkaproducer.generator;
 
 import com.example.kafkaproducer.model.ProductRequest;
-import com.github.javafaker.Faker;
+import net.datafaker.Faker;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
