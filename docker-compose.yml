@@ -36,6 +36,7 @@ services:
       - MOVIE_TOPIC=${MOVIE_TOPIC}
       - REVIEW_TOPIC=${REVIEW_TOPIC}
       - UPVOTE_TOPIC=${UPVOTE_TOPIC}
+      - SPARK_TOPIC=${SPARK_TOPIC}
       - URL_DB=${URL_DB}
       - USERNAME_DB=${USERNAME_DB}
       - PASSWORD_DB=${PASSWORD_DB}
@@ -87,4 +88,5 @@ services:
 networks:
   spark_kafka:
       driver: bridge
+      external: true
       name: spark_kafka

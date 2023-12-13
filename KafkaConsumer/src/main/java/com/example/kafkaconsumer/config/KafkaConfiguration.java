@@ -1,6 +1,7 @@
 package com.example.kafkaconsumer.config;
 
 import com.example.kafkaconsumer.model.ProductRequest;
+import com.example.kafkaconsumer.model.SparkProductOut;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -26,6 +27,25 @@ public class KafkaConfiguration {
 
     @Value("${SPARK_TOPIC}")
     private String SPARK_TOPIC;
+    @Bean
+    public ConsumerFactory<String, SparkProductOut> productOutConsumerFactory() {
+        Map<String, Object> config = new HashMap<>();
+
+        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS_CONFIG);
+        config.put(ConsumerConfig.GROUP_ID_CONFIG, "spark");
+        config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+        config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
+        return new DefaultKafkaConsumerFactory<>(config, new StringDeserializer(),
+                new JsonDeserializer<>(SparkProductOut.class));
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, SparkProductOut> productOutKafkaListenerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, SparkProductOut> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(productOutConsumerFactory());
+        return factory;
+    }
 
 
     @Bean
